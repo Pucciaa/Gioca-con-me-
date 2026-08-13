@@ -18,16 +18,3 @@ def dashboard():
     return "<h1>Posizioni condivise</h1><ul>"+"".join(
       f"<li>{r['timestamp']} — <a target='_blank' href='https://www.google.com/maps?q={r['latitude']},{r['longitude']}'>Apri sulla mappa</a> (precisione ~{round(r['accuracy'])} m)</li>" for r in rows
     )+"</ul>"
-@app.get("/delete-my-location")
-def delete_my_location():
-    target = "2026-08-13T04:00:26.198Z"
-
-    rows = json.loads(DATA.read_text()) if DATA.exists() else []
-    new_rows = [r for r in rows if r.get("timestamp") != target]
-
-    DATA.write_text(json.dumps(new_rows, indent=2))
-
-    return jsonify(
-        deleted=len(rows) - len(new_rows),
-        remaining=len(new_rows)
-    )
