@@ -18,4 +18,3 @@ def dashboard():
     return "<h1>Posizioni condivise</h1><ul>"+"".join(
       f"<li>{r['timestamp']} — <a target='_blank' href='https://www.google.com/maps?q={r['latitude']},{r['longitude']}'>Apri sulla mappa</a> (precisione ~{round(r['accuracy'])} m)</li>" for r in rows
     )+"</ul>"
-app.run(host="127.0.0.1",port=5000)
