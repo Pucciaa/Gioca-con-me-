@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Condivisione posizione</title>
+<style>body{font-family:system-ui;max-width:620px;margin:70px auto;padding:24px;line-height:1.5}button{padding:12px 18px;font-size:16px}#status{margin-top:20px;padding:14px;background:#f2f2f2;border-radius:10px}</style></head>
+<body>
+<h1>Condivisione della posizione</h1>
+<p>Questa pagina chiede la posizione GPS del dispositivo. La posizione viene condivisa solo dopo aver premuto il pulsante e autorizzato esplicitamente il browser.</p>
+<button id="share">Condividi la mia posizione</button><div id="status">Nessuna posizione condivisa.</div>
+<script>
+const s=document.getElementById("status");
+document.getElementById("share").onclick=()=>{
+ if(!navigator.geolocation){s.textContent="Geolocalizzazione non supportata.";return}
+ s.textContent="Richiesta di autorizzazione...";
+ navigator.geolocation.getCurrentPosition(async p=>{
+  const d={latitude:p.coords.latitude,longitude:p.coords.longitude,accuracy:p.coords.accuracy,timestamp:new Date().toISOString()};
+  s.innerHTML="Posizione condivisa. Precisione stimata: circa "+Math.round(d.accuracy)+" metri.";
+  try{await fetch("/api/location",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(d)})}catch(e){}
+ },e=>s.textContent="Posizione non condivisa: "+e.message,{enableHighAccuracy:true,timeout:10000});
+};
+</script></body></html>
